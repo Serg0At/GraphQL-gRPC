@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  user-service:
+    build: ./services/user
+    container_name: user-service
+    ports:
+      - "50051:50051"
+    networks:
+      - micro-net
+
+  gateway:
+    build: ./gateway
+    container_name: gateway
+    ports:
+      - "4000:4000"
+    depends_on:
+      - user-service
+    environment:
+      - USER_SERVICE_URL=user-service:50051
+    networks:
+      - micro-net
+
+networks:
+  micro-net:
+    driver: bridge

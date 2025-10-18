@@ -1,6 +1,12 @@
 import grpc from '@grpc/grpc-js';
 import protoLoader from '@grpc/proto-loader';
 import path from 'path';
+import grpcHealth from 'grpc-js-health-check';
+
+const HealthService = grpcHealth.service;
+const HealthImplementation = grpcHealth.Implementation;
+const ServingStatus = grpcHealth.status;
+
 import authClient from '../auth/client.js';
 
 const PROTO_PATH = path.resolve('./services/user/proto/user.proto')
@@ -31,6 +37,13 @@ const userService = {
 
 const server = new grpc.Server();
 server.addService(userProto.UserService.service, userService);
+
+const healthImpl = new HealthImplementation({
+  '': ServingStatus.SERVING,
+  'user.UserService': ServingStatus.SERVING,
+});
+server.addService(HealthService, healthImpl);
+
 
 server.bindAsync(
     PORT,

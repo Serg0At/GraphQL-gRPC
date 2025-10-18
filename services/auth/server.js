@@ -19,7 +19,7 @@ const authService = {
 
         if (!user) { return callback(null, { success: false, message: "Invalid credentials" }) };
 
-        const token = jwt.sign({ id: user.id, email: user.email }, 'secret', { expicallbackIn: '1h' });
+        const token = jwt.sign({ id: user.id, email: user.email }, 'secret', { expiresIn: '1h' });
         callback(null, { success: true, message: "Logged in successfully", token });
     }
 };
